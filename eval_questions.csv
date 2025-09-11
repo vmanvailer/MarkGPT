@@ -1,0 +1,15 @@
+id,question,cateogry
+1,What are the changes implemented in NIR2015?,specific
+2,I found a BURNCLASS category in my code related to processing wildfire data in Alberta. I would like to know when was this change implemented and have some details on why it was implemented.,specific
+3,What recalculations were implemented in NIR2015?,specific
+4,What is the first document that Mark Hafer appears on?,specific
+5,Were there revisions to volume to biomass parameters in NIR?,specific
+6,What are the mos common reasons for recalculations for NIR?,summary
+7,How many times have parameters changed for Residential Firewood Collection?,summary
+8,Why was the Last Pass Disturbance update implemented and what were the impacts to recalculations?,summary
+9,How many audits happened in the past 10 years?,summary
+10,What were the largest changes implemented in NIR for the past 10 years?,summary
+11,Where does Mark Hafer lived in 2015?,impossible
+12,What were the recalculations for EPR2015?,impossible
+13,How is NIR and EPR related?,impossible
+14,"What did Mark have for lunch on December 11, 2024?",impossible
