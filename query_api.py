@@ -356,6 +356,12 @@ def ui():
   textarea{flex:1; resize:vertical; min-height:46px; max-height:160px; padding:12px 14px; border-radius:14px; border:1px solid var(--border); background:var(--panel-2); color:var(--text)}
   select,button{border-radius:12px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); padding:10px 12px}
   button.primary{background:var(--accent); color:white; border:0}
+  .spinner {
+     display: inline-block; width: 14px; height: 14px; border: 2px solid #ccc; border-top-color: #000;  border-radius: 50%;  animation: spin 0.8s linear infinite;  vertical-align: middle;  margin-right: 6px;
+  }
+  @keyframes spin {
+     to { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -431,22 +437,17 @@ async function send(){
   addMsg("me", q.replace(/&/g,"&amp;").replace(/</g,"&lt;"));
   qEl.value = "";
 
-  // ---- status & watchdog ----
-  let dots = 0;
-  statusEl.textContent = "Thinking";
+  // ---- status & spinner ----
+  statusEl.innerHTML = `<span class="spinner"></span>Thinking`;
   sendBtn.disabled = true;
   cancelBtn.disabled = false;
 
-  const tick = setInterval(()=>{
-    dots = (dots+1)%4;
-    statusEl.textContent = "Thinking" + ".".repeat(dots);
-  }, 500);
-  const started = Date.now();
+  const started = Date.now()
 
   // Optional soft watchdog message if it takes long
-  const softTimeoutMs = 90000; // 90s
+  const softTimeoutMs = 30000;
   const softTimer = setTimeout(()=>{
-    statusEl.textContent = "Still working… (retrieval/generation)";
+    statusEl.innerHTML = `<span class="spinner"></span>Still working… (retrieval/generation)`;
   }, softTimeoutMs);
 
   // ---- AbortController + hard timeout ----
@@ -480,20 +481,16 @@ async function send(){
     }
     addMsg("bot", `<pre>${(data.answer||"").replace(/</g,"&lt;")}</pre>` + cites);
     const secs = ((Date.now()-started)/1000).toFixed(1);
-    statusEl.textContent = `Done in ${secs}s`;
+    statusEl.textContent = `✅ Done in ${secs}s`; // replace spinner with a checkmark
   } catch(e) {
-    if (e && (e.name === "AbortError" || String(e).includes("aborted"))) {
-      statusEl.textContent = "Canceled";
-      // No bot bubble on cancel; uncomment next line if you want one:
-      // addMsg("bot", `<div class="small">Request canceled</div>`);
+    if (e.name === "AbortError" || String(e).includes("aborted")) {
+      statusEl.textContent = "⛔ Canceled";
     } else {
+      statusEl.textContent = "❌ Error";
       addMsg("bot", `<div class="small">${e.message}</div>`);
-      statusEl.textContent = "Error";
     }
   } finally {
-    clearInterval(tick);
     clearTimeout(softTimer);
-    clearTimeout(hardTimer);
     sendBtn.disabled = false;
     cancelBtn.disabled = true;
     inFlightCtrl = null;
